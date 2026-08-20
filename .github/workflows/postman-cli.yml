@@ -1,25 +1,24 @@
-pipeline {
-  agent any
+name: Postman CLI Tests
 
-  tools {nodejs "{your_nodejs_configured_tool_name}"}
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
-  stages {
-    stage('Install Postman CLI') {
-      steps {
-        sh 'curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh'
-      }
-    }
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
 
-    stage('Postman CLI Login') {
-      steps {
-        sh 'postman login --with-api-key $POSTMAN_API_KEY'
-        }
-    }
-
-    stage('Running collection') {
-      steps {
-        sh 'postman collection run "47255817-3209ff1c-dece-4b56-9fb6-69d334fbffc5"-e "47255817-f796e283-e660-4c6b-9b2e-082e622d5ac0"'
-      }
-    }
-  }
-}
+    steps:
+      - name: Run Postman Collection
+        uses: postmanlabs/postman-cli-action@v1
+        with:
+          api-key: ${{ secrets.POSTMAN_API_KEY }}
+          command: >
+            collection run
+            47255817-3209ff1c-dece-4b56-9fb6-69d334fbffc5
+            -e 47255817-f796e283-e660-4c6b-9b2e-082e622d5ac0
