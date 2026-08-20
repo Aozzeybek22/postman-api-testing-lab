@@ -1,1 +1,16 @@
+name: Postman CLI Tests
 
+on:
+  push:
+  pull_request:
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run Postman Collection
+        uses: postmanlabs/postman-cli-action@v1
+        with:
+          api-key: ${{ secrets.POSTMAN_API_KEY }}
+          command: 'collection run 47255817-58da34f8-867b-4d20-bafb-641559302a35 -e 47255817-0172c5f1-3a2b-403d-8a64-51e70a553d59'
